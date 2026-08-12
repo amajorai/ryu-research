@@ -1,0 +1,85 @@
+{
+  "id": "@ryu/research",
+  "name": "Research",
+  "version": "1.0.0",
+  "category": "Research",
+  "description": "Deep research: multi-step web research runs backed by the autoresearch sidecar, with sources, findings, and RAG-searchable reports. Declares the out-of-process ryu-research sidecar (a thin Rust proxy that forwards /api/research/* to the Python autoresearch engine on :8087); Core reaches it via the generic ext-proxy loader.",
+  "tagline": "Multi-step web research with cited sources",
+  "keywords": ["research", "web", "reports", "sources"],
+  "icon": "microscope",
+  "iconDither": { "from": 333, "to": "transparent", "direction": "down" },
+  "surfaces": {
+    "gateway": { "support": "none" },
+    "core": { "support": "full" },
+    "desktop": { "support": "full" },
+    "island": { "support": "full" },
+    "mobile": { "support": "full" },
+    "extension": { "support": "full" },
+    "web": { "support": "full" },
+    "cli": { "support": "full" }
+  },
+  "engines": {
+    "ryu": ">=0.1.0"
+  },
+  "runnables": [],
+  "sidecars": [
+    {
+      "name": "ryu-research",
+      "process": {
+        "kind": "local",
+        "command": "ryu-research",
+        "command_env": "RYU_RESEARCH_BIN",
+        "port_env": "RYU_RESEARCH_PORT"
+      },
+      "port": 7995,
+      "health_path": "/api/research/status",
+      "lazy": true,
+      "idle_stop_secs": 300,
+      "http": {
+        "mount": "/api/research",
+        "public_mount": "/api/research",
+        "routes": [
+          { "path": "/status" },
+          { "path": "/workspace" },
+          { "path": "/workspace/:id/ledger" }
+        ]
+      }
+    }
+  ],
+  "permission_grants": [],
+  "mcp_servers": {
+    "research": {
+      "command": "ryu-research",
+      "command_env": "RYU_RESEARCH_BIN",
+      "args": ["mcp"],
+      "description": "Research — the autoresearch experiment loop over MCP (8 tools: list_experiments, init_workspace, read_file, write_file, run, keep, reset, ledger). Launched via `ryu-research mcp`, the same binary this app's sidecar entry declares; Core resolves the bare command out of its managed bin dir once that binary has landed. The tools drive the Python autoresearch engine on :8087, which installs separately — a call made before it is running returns `available: false` rather than failing the turn."
+    }
+  },
+  "permission_levels": [
+    {
+      "id": "research.view",
+      "label": "Can view",
+      "description": "Read finished research reports with their findings and sources."
+    },
+    {
+      "id": "research.run",
+      "label": "Can run research",
+      "description": "Start deep-research runs, which fetch from the open web and spend model credits on every step.",
+      "implies": ["research.view"]
+    }
+  ],
+  "contributes": {
+    "hook_events": [
+      {
+        "id": "@ryu/research#workspace.created",
+        "title": "Research workspace created",
+        "description": "A fresh git-versioned workspace was initialised for an experiment kind and its initial commit made, so the autoresearch loop (read -> edit -> run -> keep/reset) can begin against it. Fires once per POST /api/research/workspace, whether the desktop or an agent asked for it. It says a workspace EXISTS, not that anything has been run in it — the attempts themselves go through the research__* MCP tools inside Core and are not visible here. `mutable_files` is the set of files a researcher is allowed to edit; the researcher instructions (program_md) are deliberately left out of the payload because they are a document, not a signal.",
+        "payload_example": {
+          "workspace_id": "9f3c1b2a4d5e6f708192a3b4c5d6e7f8",
+          "experiment": "nanochat",
+          "mutable_files": ["train.py"]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ryu.research",
+  "version": "0.1.14",
+  "description": "Deep research: multi-step web research runs backed by the autoresearch sidecar, with sources, findings, and RAG-searchable reports. Declares the out-of-process ryu-research sidecar (a thin Rust proxy that forwards /api/research/* to the Python autoresearch engine on :8087); Core reaches it via the generic ext-proxy loader.",
+  "keywords": [
+    "research",
+    "web",
+    "reports",
+    "sources"
+  ],
+  "extensions": {
+    "com.ryuhq.ryu": {
+      "id": "@ryu/research",
+      "displayName": "Research",
+      "mcp": {
+        "research": {
+          "command_env": "RYU_RESEARCH_BIN",
+          "description": "Research — the autoresearch experiment loop over MCP (8 tools: list_experiments, init_workspace, read_file, write_file, run, keep, reset, ledger). Launched via `ryu-research mcp`, the same binary this app's sidecar entry declares; Core resolves the bare command out of its managed bin dir once that binary has landed. The tools drive the Python autoresearch engine on :8087, which installs separately — a call made before it is running returns `available: false` rather than failing the turn."
+        }
+      }
+    }
+  }
+}

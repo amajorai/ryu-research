@@ -1,0 +1,20 @@
+[project]
+name = "ryu-research"
+version = "0.1.0"
+description = "Ryu autoresearch sidecar — config-driven experiment runner behind one HTTP contract."
+requires-python = ">=3.9"
+# Zero-dependency by design: the HTTP service uses only the Python standard
+# library (http.server + tomllib + subprocess + git), so `toy` runs on a bare
+# Mac with no GPU and no pip install. Per-experiment runtimes (e.g. nanochat's
+# torch) are the experiment's own `uv`/pip concern, never the sidecar's.
+dependencies = []
+
+[project.scripts]
+ryu-research = "ryu_research.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ryu_research"]

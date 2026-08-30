@@ -1,0 +1,17 @@
+name = "Toy optimization"
+description = "Zero-setup CPU experiment: pure-Python numeric optimization that prints val_bpb. Runs anywhere (no GPU, no deps) so the autoresearch loop works out of the box."
+
+# Plain `python` — no uv, no venv, no external deps — so this is the true
+# zero-setup default. The agent edits `train.py` to lower val_bpb.
+run_cmd = "python train.py"
+metric_regex = "val_bpb\\s*=\\s*([0-9.]+)"
+metric_direction = "minimize"
+budget_s = 60
+budget_min_s = 1
+budget_max_s = 3600
+early_stop_max_attempts = 0
+early_stop_patience = 0
+early_stop_min_delta = 0.0
+early_stop_max_failures = 0
+mutable_files = ["train.py"]
+gpu_required = false

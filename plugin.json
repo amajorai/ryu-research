@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ryu.research",
+  "version": "0.1.17",
+  "description": "Run durable autoresearch campaigns with one-shot proposals, direction-aware winners, bounded budgets, policy-based stopping, and automatic recursive analysis for oversized history.",
+  "author": {
+    "name": "Ryu",
+    "url": "https://ryuhq.com"
+  },
+  "homepage": "https://github.com/amajorai/ryu-research",
+  "repository": "https://github.com/amajorai/ryu-research",
+  "keywords": ["research", "autoresearch", "experiments", "rlm"],
+  "extensions": {
+    "com.ryuhq.ryu": {
+      "id": "@ryu/research",
+      "displayName": "Research",
+      "mcp": {
+        "research": {
+          "command_env": "RYU_RESEARCH_BIN",
+          "description": "Research — durable autoresearch campaigns over MCP. `next_variant` prepares a one-shot proposal and automatically verifies recursive RLM evidence when history is oversized; `run` consumes that proposal exactly once."
+        }
+      }
+    }
+  }
+}

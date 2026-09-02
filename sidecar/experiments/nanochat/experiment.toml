@@ -1,0 +1,17 @@
+name = "nanochat GPT"
+description = "Faithful Karpathy-style autoresearch: a minimal single-file GPT trained on a character corpus, reporting val_bpb (bits-per-byte). Single GPU, uv-managed. The agent edits train.py to lower val_bpb."
+
+# uv resolves torch on first run (see the inline PEP-723 script metadata in
+# train.py / prepare.py). Requires a single CUDA (or MPS) GPU for usable speed.
+run_cmd = "uv run train.py"
+metric_regex = "val_bpb\\s*=\\s*([0-9.]+)"
+metric_direction = "minimize"
+budget_s = 300
+budget_min_s = 1
+budget_max_s = 3600
+early_stop_max_attempts = 0
+early_stop_patience = 0
+early_stop_min_delta = 0.0
+early_stop_max_failures = 0
+mutable_files = ["train.py"]
+gpu_required = true

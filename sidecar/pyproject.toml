@@ -1,0 +1,23 @@
+[project]
+name = "ryu-research"
+version = "0.1.0"
+description = "Ryu autoresearch sidecar — config-driven experiment runner behind one HTTP contract."
+requires-python = ">=3.9"
+# The HTTP service uses only the Python standard library (http.server + tomllib
+# + subprocess + git), so `toy` runs on a bare Mac with no GPU and no pip
+# install. `cryptography` provides the ChaCha20-Poly1305 used to seal campaign
+# content at rest (ryu_research/ryu_content_seal.py); when it is not installed
+# the engine falls back to a pure-Python implementation that passes the same
+# test vectors, so a bare Python still starts. Per-experiment runtimes (e.g.
+# nanochat's torch) are the experiment's own `uv`/pip concern.
+dependencies = ["cryptography>=50.0.0"]
+
+[project.scripts]
+ryu-research = "ryu_research.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ryu_research"]
